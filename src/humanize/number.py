@@ -140,6 +140,42 @@ def ordinal(value: NumberOrString, gender: str = "male") -> str:
     return f"{value}{P_(*_ORDINAL_SUFFIXES[gender][digit])}"
 
 
+def ordinal_range(start: int, end: int, gender: str = "male") -> list[str]:
+    """Converts a range of integers to their ordinals as strings.
+
+    Both `start` and `end` are included. For example, 1 to 3 gives
+    `["1st", "2nd", "3rd"]`. Each number is converted with `ordinal()`.
+
+    Examples:
+        ```pycon
+        >>> ordinal_range(1, 3)
+        ['1st', '2nd', '3rd']
+        >>> ordinal_range(10, 12)
+        ['10th', '11th', '12th']
+        >>> ordinal_range(5, 5)
+        ['5th']
+        >>> ordinal_range(1, 2, gender="female")
+        ['1st', '2nd']
+
+        ```
+
+    Args:
+        start (int): First integer to convert.
+        end (int): Last integer to convert, included in the result.
+        gender (str): Gender for translations. Accepts either "male" or "female".
+
+    Returns:
+        list[str]: Ordinal strings for every integer from `start` to `end`.
+
+    Raises:
+        ValueError: If `start` is greater than `end`.
+    """
+    if start > end:
+        msg = f"start ({start}) must not be greater than end ({end})"
+        raise ValueError(msg)
+    return [ordinal(value, gender) for value in range(start, end + 1)]
+
+
 def intcomma(value: NumberOrString, ndigits: int | None = None) -> str:
     """Converts an integer to a string containing commas every three digits.
 
