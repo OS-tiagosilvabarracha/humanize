@@ -39,6 +39,39 @@ def test_ordinal(test_input: str, expected: str) -> None:
 
 
 @pytest.mark.parametrize(
+    "start, end, expected",
+    [
+        (1, 3, ["1st", "2nd", "3rd"]),
+        (5, 5, ["5th"]),
+        (9, 11, ["9th", "10th", "11th"]),
+        (11, 13, ["11th", "12th", "13th"]),
+        (99, 101, ["99th", "100th", "101st"]),
+        (0, 1, ["0th", "1st"]),
+    ],
+)
+def test_ordinal_range(start: int, end: int, expected: list[str]) -> None:
+    assert humanize.ordinal_range(start, end) == expected
+
+
+def test_ordinal_range_passes_gender(monkeypatch: pytest.MonkeyPatch) -> None:
+    # English suffixes are gender-neutral, so assert the argument is passed on.
+    calls: list[tuple[int, str]] = []
+
+    def fake_ordinal(value: int, gender: str = "male") -> str:
+        calls.append((value, gender))
+        return str(value)
+
+    monkeypatch.setattr(number, "ordinal", fake_ordinal)
+    assert humanize.ordinal_range(1, 2, gender="female") == ["1", "2"]
+    assert calls == [(1, "female"), (2, "female")]
+
+
+def test_ordinal_range_start_greater_than_end_raises() -> None:
+    with pytest.raises(ValueError, match="must not be greater than end"):
+        humanize.ordinal_range(3, 1)
+
+
+@pytest.mark.parametrize(
     "test_args, expected",
     [
         ([100], "100"),
