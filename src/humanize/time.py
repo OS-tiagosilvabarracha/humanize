@@ -332,6 +332,13 @@ def naturalday(value: dt.date | dt.datetime, format: str = "%b %d") -> str:
     present day return representing string. Otherwise, return a string
     formatted according to `format`.
 
+    Examples:
+        >>> import datetime as dt
+        >>> naturalday(dt.date(2000, 1, 1))
+        'Jan 01'
+        >>> naturalday(dt.date(2000, 1, 1), "%Y-%m-%d")
+        '2000-01-01'
+
     """
     import datetime as dt
 
