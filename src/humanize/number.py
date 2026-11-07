@@ -601,3 +601,17 @@ def metric(value: float, unit: str = "", precision: int = 3) -> str:
         space = " "
 
     return f"{value_}{space}{ordinal_}{unit}"
+
+
+def ordinal_range(start: int, end: int, gender: str = "male") -> list[str]:
+    """The ordinals from `start` to `end`, both included.
+
+    Args:
+        start (int): The first number.
+        end (int): The last number, included.
+        gender (str): Gender for translations. Accepts either "male" or "female".
+
+    Returns:
+        list[str]: One ordinal string per number, in order.
+    """
+    return [ordinal(number, gender) for number in range(start, end)]
