@@ -41,6 +41,26 @@ def test_ordinal(test_input: str, expected: str) -> None:
 @pytest.mark.parametrize(
     "test_args, expected",
     [
+        ((1, 3), ["1st", "2nd", "3rd"]),
+        ((4, 4), ["4th"]),
+        ((9, 12), ["9th", "10th", "11th", "12th"]),
+        ((100, 103), ["100th", "101st", "102nd", "103rd"]),
+        ((1, 2, "female"), ["1st", "2nd"]),
+        ((3, 3, "female"), ["3rd"]),
+    ],
+)
+def test_ordinal_range(test_args: tuple[typing.Any, ...], expected: list[str]) -> None:
+    assert humanize.ordinal_range(*test_args) == expected
+
+
+def test_ordinal_range_start_greater_than_end() -> None:
+    with pytest.raises(ValueError, match="start must be less than or equal to end"):
+        humanize.ordinal_range(3, 1)
+
+
+@pytest.mark.parametrize(
+    "test_args, expected",
+    [
         ([100], "100"),
         ([1000], "1,000"),
         ([10123], "10,123"),
