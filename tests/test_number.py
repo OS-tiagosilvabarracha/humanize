@@ -41,6 +41,50 @@ def test_ordinal(test_input: str, expected: str) -> None:
 @pytest.mark.parametrize(
     "test_args, expected",
     [
+        ([1, 3], ["1st", "2nd", "3rd"]),
+        ([4, 4], ["4th"]),
+        ([0, 2], ["0th", "1st", "2nd"]),
+        ([10, 14], ["10th", "11th", "12th", "13th", "14th"]),
+        ([99, 102], ["99th", "100th", "101st", "102nd"]),
+        ([1, 3, "female"], ["1st", "2nd", "3rd"]),
+        ([1, 3, "male"], ["1st", "2nd", "3rd"]),
+        ([21, 23, "female"], ["21st", "22nd", "23rd"]),
+    ],
+)
+def test_ordinal_range(test_args: list[typing.Any], expected: list[str]) -> None:
+    assert humanize.ordinal_range(*test_args) == expected
+
+
+def test_ordinal_range_matches_ordinal() -> None:
+    values = range(-2, 120)
+    assert humanize.ordinal_range(-2, 119) == [humanize.ordinal(v) for v in values]
+    assert humanize.ordinal_range(-2, 119, "female") == [
+        humanize.ordinal(v, "female") for v in values
+    ]
+
+
+@pytest.mark.parametrize(
+    "test_args",
+    [
+        [3, 1],
+        [1, 0],
+        [-1, -2],
+        [5, 1, "female"],
+    ],
+)
+def test_ordinal_range_start_greater_than_end(test_args: list[typing.Any]) -> None:
+    with pytest.raises(ValueError, match="must not be greater than end"):
+        humanize.ordinal_range(*test_args)
+
+
+def test_ordinal_range_exported() -> None:
+    assert "ordinal_range" in humanize.__all__
+    assert humanize.ordinal_range is number.ordinal_range
+
+
+@pytest.mark.parametrize(
+    "test_args, expected",
+    [
         ([100], "100"),
         ([1000], "1,000"),
         ([10123], "10,123"),
