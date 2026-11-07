@@ -109,6 +109,8 @@ def ordinal(value: NumberOrString, gender: str = "male") -> str:
         '4th'
         >>> ordinal(12)
         '12th'
+        >>> ordinal(13)
+        '13th'
         >>> ordinal(101)
         '101st'
         >>> ordinal(111)
