@@ -197,6 +197,13 @@ def _pgettext_noop(msgctxt: str, message: str) -> tuple[str, str]:
 def thousands_separator() -> str:
     """Return the thousands separator for a locale, default to comma.
 
+    Examples:
+        ```pycon
+        >>> thousands_separator()
+        ','
+
+        ```
+
     Returns:
          str: Thousands separator.
     """
