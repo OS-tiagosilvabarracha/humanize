@@ -52,6 +52,36 @@ def test_ordinal_range(test_args: tuple[typing.Any, ...], expected: list[str]) -
     assert humanize.ordinal_range(*test_args) == expected
 
 
+@pytest.mark.parametrize(
+    "test_args, test_kwargs, expected",
+    [
+        ((1, 5), {"step": 2}, ["1st", "3rd", "5th"]),
+        ((1, 4), {"step": 2}, ["1st", "3rd"]),
+        ((1, 10), {"step": 4}, ["1st", "5th", "9th"]),
+        ((1, 3), {"step": 5}, ["1st"]),
+        ((3, 3), {"step": 2}, ["3rd"]),
+        ((2, 3), {"gender": "female", "step": 1}, ["2nd", "3rd"]),
+    ],
+)
+def test_ordinal_range_step(
+    test_args: tuple[typing.Any, ...],
+    test_kwargs: dict[str, typing.Any],
+    expected: list[str],
+) -> None:
+    assert humanize.ordinal_range(*test_args, **test_kwargs) == expected
+
+
+def test_ordinal_range_step_is_keyword_only() -> None:
+    with pytest.raises(TypeError):
+        humanize.ordinal_range(1, 5, "male", 2)  # type: ignore[call-arg]
+
+
+@pytest.mark.parametrize("step", [0, -1])
+def test_ordinal_range_step_below_one(step: int) -> None:
+    with pytest.raises(ValueError, match="step must be at least 1"):
+        humanize.ordinal_range(1, 5, step=step)
+
+
 def test_ordinal_range_start_greater_than_end() -> None:
     with pytest.raises(ValueError, match="start must not be greater than end"):
         humanize.ordinal_range(5, 4)

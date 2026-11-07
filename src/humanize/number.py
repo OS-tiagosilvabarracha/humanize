@@ -140,10 +140,13 @@ def ordinal(value: NumberOrString, gender: str = "male") -> str:
     return f"{value}{P_(*_ORDINAL_SUFFIXES[gender][digit])}"
 
 
-def ordinal_range(start: int, end: int, gender: str = "male") -> list[str]:
+def ordinal_range(
+    start: int, end: int, gender: str = "male", *, step: int = 1
+) -> list[str]:
     """Converts a range of integers to a list of their ordinals.
 
-    Both `start` and `end` are included. Each number is converted with `ordinal()`.
+    `start` is always included. `end` is included only when `start` plus a multiple
+    of `step` lands on it. Each number is converted with `ordinal()`.
 
     Examples:
         ```pycon
@@ -151,6 +154,10 @@ def ordinal_range(start: int, end: int, gender: str = "male") -> list[str]:
         ['1st', '2nd', '3rd']
         >>> ordinal_range(10, 13)
         ['10th', '11th', '12th', '13th']
+        >>> ordinal_range(1, 5, step=2)
+        ['1st', '3rd', '5th']
+        >>> ordinal_range(1, 4, step=2)
+        ['1st', '3rd']
         >>> ordinal_range(2, 3, gender="female")
         ['2nd', '3rd']
         >>> ordinal_range(5, 4)
@@ -162,19 +169,23 @@ def ordinal_range(start: int, end: int, gender: str = "male") -> list[str]:
 
     Args:
         start (int): First number of the range.
-        end (int): Last number of the range, included.
+        end (int): Last number of the range, included when reached by `step`.
         gender (str): Gender for translations. Accepts either "male" or "female".
+        step (int): Difference between consecutive numbers. Must be at least 1.
 
     Returns:
-        list[str]: Ordinal strings for every number from `start` to `end`.
+        list[str]: Ordinal strings for the numbers from `start` to `end`.
 
     Raises:
-        ValueError: If `start` is greater than `end`.
+        ValueError: If `start` is greater than `end`, or `step` is less than 1.
     """
     if start > end:
         msg = "start must not be greater than end"
         raise ValueError(msg)
-    return [ordinal(value, gender=gender) for value in range(start, end + 1)]
+    if step < 1:
+        msg = "step must be at least 1"
+        raise ValueError(msg)
+    return [ordinal(value, gender=gender) for value in range(start, end + 1, step)]
 
 
 def intcomma(value: NumberOrString, ndigits: int | None = None) -> str:
