@@ -95,7 +95,15 @@ def activate(
 
 
 def deactivate() -> None:
-    """Deactivate internationalisation."""
+    """Deactivate internationalisation.
+
+    Examples:
+        >>> import humanize
+        >>> _t = humanize.i18n.activate("en_GB")
+        >>> humanize.i18n.deactivate()
+        >>> humanize.naturalsize(1000)
+        '1.0 kB'
+    """
     _CURRENT.locale = None
 
 
