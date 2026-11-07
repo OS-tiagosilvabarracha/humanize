@@ -22,6 +22,7 @@ from humanize.number import (
     intword,
     metric,
     ordinal,
+    ordinal_range,
     scientific,
 )
 from humanize.time import (
@@ -52,6 +53,7 @@ __all__ = [
     "naturalsize",
     "naturaltime",
     "ordinal",
+    "ordinal_range",
     "precisedelta",
     "scientific",
     "thousands_separator",
